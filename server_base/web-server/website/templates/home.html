@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
+    <h1 align="center"> Solar System </h1>
+    <ul>
+        <li>Azymut: {{ azimuth }}</li>
+        <li>Wysokość słońca: {{ altitude }}</li>
+      </ul>
+
+    <center><div style="height: 60vh; width: 60%;">
+        <canvas id="myChart"></canvas>
+    </div></center>
+ 
+    <script> 
+        const labels = {{ labels | tojson}};
+ 
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Power[W]',
+                backgroundColor: 'rgb(20, 99, 132)',
+                borderColor: 'rgb(20, 99, 132)',
+                data: {{ data | tojson}},
+            }]
+        };
+ 
+        const config = {
+            type: 'line',
+            data: data,
+            options: { maintainAspectRatio: false }
+        };
+ 
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+ 
+    </script>
+
+    <br /><br /><br />
+    <form method="POST">
+        <h3 align="center">Wybierz dzień dla którego chcesz wyrysować wykres</h3>
+        <center>
+            <div class="form-group">
+                <input
+                type="date"
+                class="form-control"
+                id="date"
+                name="date"
+                placeholder="DD:MM:RRRR"
+                style="width: 140px;"
+                />
+            </div>
+            <button type="Zatwierdź" class="btn btn-primary">Zatwierdź</button>
+        </center>
+    </form>
+    <br />
+
+{% endblock %}
+
