@@ -1,5 +1,7 @@
 #include "odometry.h"
 
+Gyroscope gyroscope;
+
 void Gyroscope::init() {
     mpu.initialize();
     devStatus = mpu.dmpInitialize();
@@ -43,10 +45,13 @@ void Gyroscope::updateAngles() {
     }
 }
 
-void Encoder::incrementPulseCnt() {
-    pulseCounter++;
+volatile int leftEncoderCnt = 0;
+volatile int rightEncoderCnt = 0;
+
+void incrementLeftEncoderCnt() {
+    leftEncoderCnt++;
 }
 
-void Encoder::resetPulseCnt() {
-    pulseCounter = 0;
+void incrementRightEncoderCnt() {
+    rightEncoderCnt++;
 }

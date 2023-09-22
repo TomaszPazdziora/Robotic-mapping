@@ -34,8 +34,8 @@ void readDataFromServer() {
     }
 
     state = sensorReadingsArr[0];
-    LeftMotor.speed = sensorReadingsArr[1];
-    RightMotor.speed = sensorReadingsArr[2];
+    LeftMotor.setSpeed(sensorReadingsArr[1]);
+    RightMotor.setSpeed(sensorReadingsArr[2]);
   }
 
   else {

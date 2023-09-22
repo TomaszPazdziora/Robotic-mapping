@@ -2,7 +2,6 @@
 #define __TASKS_H__
 
 #include "server.h"
-#include "navigation.h"
 
 void manualControlTask();
 void idleTask();

@@ -12,13 +12,13 @@
 
 // DEFINE ALL PERIPHERALS
 
-#define Pin_LeftMotorForward 14 // zmien na 26
-#define Pin_LeftMotorBackward 27
-#define Pin_LeftMotorPWM 26 // zmien na 14
+#define Pin_LeftMotorForward 17 
+#define Pin_LeftMotorBackward 16
+#define Pin_LeftMotorPWM 4 
 
-#define Pin_RightMotorForward 25
-#define Pin_RightMotorBackward 33
-#define Pin_RightMotorPWM 32
+#define Pin_RightMotorForward 5
+#define Pin_RightMotorBackward 18
+#define Pin_RightMotorPWM 19
 
 #define Pin_Trigger 15
 #define Pin_Echo 21
@@ -26,6 +26,7 @@
 #define Pin_RightEncoder 4
 #define Pin_LeftEncoder 0
 
+extern hw_timer_t *MotorSpeedTim;
 
 // WIFI DATA 
 

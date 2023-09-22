@@ -1,5 +1,8 @@
 #include "navigation.h"
 
+Motor RightMotor = Motor(Pin_RightMotorForward, Pin_RightMotorBackward, Pin_RightMotorPWM);
+Motor LeftMotor = Motor(Pin_LeftMotorForward, Pin_LeftMotorBackward, Pin_LeftMotorPWM);
+
 void Motor::move() {
 
     if (speed >= 0) { // Set Motor forwards
@@ -40,4 +43,19 @@ void Motor::stop() {
     digitalWrite(Pin_Forward, LOW);
     digitalWrite(Pin_Backward, LOW);
     analogWrite(Pin_PWM, 0);
+}
+
+void IRAM_ATTR MotorSpeedInterrupt() {
+    timerAlarmDisable(MotorSpeedTim); 
+    float rotationSpeed = (leftEncoderCnt / DISC_SLOTS) * 60;
+    Serial.print("Left motor speed: ");        
+    Serial.println(rotationSpeed);  
+    leftEncoderCnt = 0;
+
+    rotationSpeed = (rightEncoderCnt / DISC_SLOTS) * 60;
+    Serial.print("Right motor speed: ");        
+    Serial.println(rotationSpeed);  
+    rightEncoderCnt = 0;
+
+    timerAlarmEnable(MotorSpeedTim); 
 }

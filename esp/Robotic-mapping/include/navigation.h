@@ -3,9 +3,6 @@
 
 #include "odometry.h"
 
-Motor RightMotor = Motor(Pin_RightMotorForward, Pin_RightMotorBackward, Pin_RightMotorPWM);
-Motor LeftMotor = Motor(Pin_LeftMotorForward, Pin_LeftMotorBackward, Pin_LeftMotorPWM);
-
 class Motor {
     private:
         int Pin_Forward;
@@ -27,5 +24,9 @@ class Motor {
     void setSpeed(int s);
     void stop();
 };
+
+extern Motor RightMotor;
+extern Motor LeftMotor;
+void IRAM_ATTR MotorSpeedInterrupt();
 
 #endif

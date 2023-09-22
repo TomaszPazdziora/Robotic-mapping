@@ -3,9 +3,6 @@
 
 #include "init.h"
 
-Gyroscope gyroscope;
-Encoder LeftEncoder, RightEncoder;
-
 class Gyroscope {
     private:
         bool dmpReady = false;
@@ -21,15 +18,14 @@ class Gyroscope {
         void updateAngles();
 };
 
-class Encoder {
-    private:
-        static const int discSlots = 20;
-        static const float wheelDiameter = 66.10f;
-        unsigned int pulseCounter = 0;
+extern Gyroscope gyroscope;
 
-    public:
-        void incrementPulseCnt();
-        void resetPulseCnt();
-};
+#define DISC_SLOTS 20
+#define WHEEL_DIAMETER 60.10
+extern volatile int leftEncoderCnt;
+extern volatile int rightEncoderCnt;
+
+extern void incrementLeftEncoderCnt();
+extern void incrementRightEncoderCnt();
 
 #endif
