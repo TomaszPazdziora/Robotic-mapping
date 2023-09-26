@@ -15,21 +15,16 @@ void readDataFromServer() {
       return;
     }
   
-    Serial.print("JSON object = ");
-    Serial.println(myObject);
+    // Serial.print("JSON object = ");
+    // Serial.println(myObject);
   
     // myObject.keys() can be used to get an array of all the keys in the object
     JSONVar keys = myObject.keys();
-    Serial.print("Length = ");
-    Serial.println(keys.length());
+    // Serial.print("Length = ");
+    // Serial.println(keys.length());
 
     for (int i = 0; i < keys.length(); i++) {
-      Serial.print("i = ");
-      Serial.println(i);
       JSONVar value = myObject[keys[i]];
-      Serial.print(keys[i]);
-      Serial.print(" = ");
-      Serial.println(value);
       sensorReadingsArr[i] = (int)value;
     }
 
@@ -58,8 +53,8 @@ String httpGETRequest(const char* serverName) {
   String payload = "{}"; 
   
   if (httpResponseCode>0) {
-    Serial.print("HTTP Response code: ");
-    Serial.println(httpResponseCode);
+    // Serial.print("HTTP Response code: ");
+    // Serial.println(httpResponseCode);
     payload = http.getString();
   }
   

@@ -32,10 +32,6 @@ void setup() {
 }
 
 void loop() {
-  delay(100);
-  readDataFromServer();
-
-  delay(1000);
   switch(state) {
     case idle:
       Serial.println("idle");

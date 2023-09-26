@@ -23,8 +23,8 @@
 #define Pin_Trigger 15
 #define Pin_Echo 21
 
-#define Pin_RightEncoder 4
-#define Pin_LeftEncoder 0
+#define Pin_RightEncoder 13
+#define Pin_LeftEncoder 36
 
 extern hw_timer_t *MotorSpeedTim;
 

@@ -30,19 +30,20 @@ void Gyroscope::init() {
     }
 }
 
-void Gyroscope::updateAngles() {
-    if (!dmpReady) return;
+int Gyroscope::getAngle() {
+    if (!dmpReady) return 0;
     if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) { // Get the Latest packet 
             mpu.dmpGetQuaternion(&q, fifoBuffer);
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
             Serial.print("ypr\t");
             Serial.print(ypr[0] * 180/M_PI);
-            Serial.print("\t");
-            Serial.print(ypr[1] * 180/M_PI);
-            Serial.print("\t");
-            Serial.println(ypr[2] * 180/M_PI);
+            // Serial.print("\t");
+            // Serial.print(ypr[1] * 180/M_PI);
+            // Serial.print("\t");
+            // Serial.println(ypr[2] * 180/M_PI);
     }
+    return ypr[0] * 180/M_PI;
 }
 
 volatile int leftEncoderCnt = 0;

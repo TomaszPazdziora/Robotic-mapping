@@ -1,14 +1,23 @@
 #include "tasks.h"
 
 void idleTask() {
-    // timerAlarmEnable(MotorSpeedTim); 
-    LeftMotor.stop();
-    RightMotor.stop();
+    while(state == idle) {
+        readDataFromServer();
+        timerAlarmDisable(MotorSpeedTim);
+        LeftMotor.stop();
+        RightMotor.stop();
+    }
 }
 
 void manualControlTask() {
-    // gyroscope.updateAngles();
-    LeftMotor.move();
-    RightMotor.move();
+
+    while(state == manual) {
+        readDataFromServer();
+        // int angle = gyroscope.getAngle();
+        LeftMotor.move();
+        RightMotor.move();        
+    }
+    
+    // timerAlarmEnable(MotorSpeedTim); 
 }
 

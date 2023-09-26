@@ -15,7 +15,7 @@ class Gyroscope {
     
     public:
         void init();
-        void updateAngles();
+        int getAngle();
 };
 
 extern Gyroscope gyroscope;
