@@ -4,7 +4,7 @@ from . import db
 import json
 
 # STATES
-SUSPEND   = 0
+IDLE   = 0
 MANUAL    = 1
 TRACE     = 2
 SCANNING  = 3
@@ -20,14 +20,14 @@ views = Blueprint('views', __name__)
 @views.route('/', methods=["GET", "POST"])
 def home():
     global state
-    state = SUSPEND
+    state = IDLE
 
     if request.method == "GET":
         return render_template("home.html", state=0)
 
 
 @views.route('/manual', methods=["GET", "POST"])
-def trace():
+def manual():
     global left_speed
     global right_speed
     global state
@@ -54,7 +54,17 @@ def trace():
         if right_speed == '':
             right_speed = 0
 
-        return render_template("manual.html", state=1, left_speed=left_speed, right_speed=right_speed)
+        return render_template("manual.html", state=state, left_speed=left_speed, right_speed=right_speed)
+
+
+@views.route('/trace', methods=["GET", "POST"])
+def trace():
+    global left_speed
+    global right_speed
+    global state
+    state = TRACE
+
+    return render_template("trace.html", state=state, left_speed=left_speed, right_speed=right_speed)
 
 
 @views.route('/data', methods=["GET"])
