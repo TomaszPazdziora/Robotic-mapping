@@ -8,7 +8,6 @@
         <li>Prędkość lewego koła: {{ left_speed }}</li>
         <li>Prędkość prawego koła: {{ right_speed }}</li>
     </ul>
-    <br /><br />
 {% endblock %}
     
 {% block content %}
@@ -28,6 +27,17 @@
             
             <button type="start" name="start_btn" class="btn btn-primary" value="run">START</button>
             <button type="stop" name="stop_btn" class="btn btn-primary" value="stp">STOP</button><br><br>
+            <br/><br/>
+        </center>
+    </form>
+
+    <h2><center>Zadana trasa:</center></h2>
+    <center>{{ trace }}</center>
+
+    <form method="POST">
+        <center>
+            <br/>
+            <button type="set_default" name="reset_trace_btn" class="btn btn-primary">Reset trasy</button><br><br>
         </center>
     </form>
 
