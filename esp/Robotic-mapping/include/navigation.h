@@ -19,8 +19,8 @@ class Motor {
     }
 
     void move();
-    void moveXSteps();
-    void moveXCM();
+    void moveXSteps(int x);
+    void moveXCM(int x);
     void setSpeed(int s);
     void stop();
 };

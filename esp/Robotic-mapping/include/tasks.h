@@ -5,5 +5,6 @@
 
 void manualControlTask();
 void idleTask();
+void traceTask();
 
 #endif

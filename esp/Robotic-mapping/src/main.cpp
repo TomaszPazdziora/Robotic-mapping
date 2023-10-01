@@ -13,9 +13,9 @@ void setup() {
   pinMode(Pin_RightMotorPWM,      OUTPUT);
   gyroscope.init();
   
-  MotorSpeedTim = timerBegin(0, 80, true);
-  timerAttachInterrupt(MotorSpeedTim, &MotorSpeedInterrupt, true);
-  timerAlarmWrite(MotorSpeedTim, 1000000, true);
+  // MotorSpeedTim = timerBegin(0, 80, true);
+  // timerAttachInterrupt(MotorSpeedTim, &MotorSpeedInterrupt, true);
+  // timerAlarmWrite(MotorSpeedTim, 1000000, true);
 
   attachInterrupt(digitalPinToInterrupt (Pin_LeftEncoder), incrementLeftEncoderCnt, RISING);
   attachInterrupt(digitalPinToInterrupt (Pin_RightEncoder), incrementRightEncoderCnt, RISING);  
@@ -41,6 +41,9 @@ void loop() {
       Serial.println("manual");
       manualControlTask();
       break;
+    case trace:
+      Serial.println("trace");
+      traceTask();
     default:
       Serial.println("diff");
       break;
