@@ -3,23 +3,13 @@
 {% block heading %}Strona główna{% endblock %}
 
 {% block data %}
-    <ul>
-        <li>Azymut: {{ azimuth }}</li>
-        <li>Wysokość słońca: {{ altitude }}</li>
-    </ul>
-    <br /><br />
 {% endblock %}
     
 {% block content %}
     <form method="POST">
-        <h3 align="center">Wybierz tryb pracy robota</h3>
-        <center>
-            <button type="manual" class="btn btn-primary">Sterowanie manualne</button>
-            <button type="trace" class="btn btn-primary">Zadaj trasę</button>
-            <button type="scanning" class="btn btn-primary">Tryb skanowania</button>
-        </center>
+        <h4 align="center">Wybierz tryb pracy robota paska zadań</h4>
     </form>
-    <br />
+    <br/>
 
 {% endblock %}
 

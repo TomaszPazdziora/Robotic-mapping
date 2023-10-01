@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Zadana trasa{% endblock %}
+{% block heading %}Zadaj trasę{% endblock %}
+
+{% block data %}
+    <ul>
+        <li>Tryb pracy: {{ state }}</li>
+        <li>Prędkość lewego koła: {{ left_speed }}</li>
+        <li>Prędkość prawego koła: {{ right_speed }}</li>
+    </ul>
+{% endblock %}
+    
+{% block content %}
+    <form method="POST">
+        <center>
+            <input type="text" id="default_speed" name="default_speed"><br>
+            <button type="set_default" name="set_default_btn" class="btn btn-primary">Ustaw domyślną prędkość</button><br><br>
+
+            <input type="text" id="drive_forwards" name="drive_forwards"><br>
+            <button type="drive_forwards" name="drive_forwards_btn" class="btn btn-primary">Jedź prosto zadaną odległość</button><br><br>            
+            
+            <input type="text" id="left_shift" name="left_shift">
+            <input type="text" id="right_shift" name="right_shift"> <br>
+            
+            <button type="turn_left" name="turn_left_btn"class="btn btn-primary">Skręć w lewo o zadany kąt</button>
+            <button type="turn_right" name="turn_right_btn"class="btn btn-primary">Skręć w prawo o zadany kąt</button> <br><br>
+            
+            <button type="start" name="start_btn" class="btn btn-primary" value="run">START</button>
+            <button type="stop" name="stop_btn" class="btn btn-primary" value="stp">STOP</button><br><br>
+            <br/><br/>
+        </center>
+    </form>
+
+    <h2><center>Zadana trasa:</center></h2>
+    <center>{{ trace }}</center>
+
+    <form method="POST">
+        <center>
+            <br/>
+            <button type="set_default" name="reset_trace_btn" class="btn btn-primary">Reset trasy</button><br><br>
+        </center>
+    </form>
+
+{% endblock %}
