@@ -1,13 +1,13 @@
 #include "server.h"
 
-String sensorReadings;
-int sensorReadingsArr[3];
+String serverData;
+int serverDataArr[3];
 
 void readDataFromServer() {
   if(WiFi.status()== WL_CONNECTED){
-    sensorReadings = httpGETRequest(serverName);
-    Serial.println(sensorReadings);
-    JSONVar myObject = JSON.parse(sensorReadings);
+    serverData = httpGETRequest(serverDataAddress);
+    Serial.println(serverData);
+    JSONVar myObject = JSON.parse(serverData);
   
     // JSON.typeof(jsonVar) can be used to get the type of the var
     if (JSON.typeof(myObject) == "undefined") {
@@ -25,12 +25,12 @@ void readDataFromServer() {
 
     for (int i = 0; i < keys.length(); i++) {
       JSONVar value = myObject[keys[i]];
-      sensorReadingsArr[i] = (int)value;
+      serverDataArr[i] = (int)value;
     }
 
-    state = sensorReadingsArr[0];
-    LeftMotor.setSpeed(sensorReadingsArr[1]);
-    RightMotor.setSpeed(sensorReadingsArr[2]);
+    state = serverDataArr[0];
+    LeftMotor.setSpeed(serverDataArr[1]);
+    RightMotor.setSpeed(serverDataArr[2]);
   }
 
   else {
@@ -39,14 +39,11 @@ void readDataFromServer() {
 }
 
 
-String httpGETRequest(const char* serverName) {
+String httpGETRequest(const char* serverAddress) {
   WiFiClient client;
   HTTPClient http;
   // Your IP address with path or Domain name with URL path 
-  http.begin(client, serverName);
-   
-  // If you need Node-RED/server authentication, insert user and password below
-  // http.setAuthorization("REPLACE_WITH_SERVER_USERNAME", "REPLACE_WITH_SERVER_PASSWORD");
+  http.begin(client, serverAddress);
   
   // Send HTTP POST request
   int httpResponseCode = http.GET(); 

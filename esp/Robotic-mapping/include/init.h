@@ -32,7 +32,8 @@ extern hw_timer_t *MotorSpeedTim;
 
 extern const char* ssid; 
 extern const char* password;
-extern const char* serverName;
+extern const char* serverDataAddress;
+extern const char* serverTraceAddress;
 
 // ENUMS AND STRUCTS
 
