@@ -26,24 +26,6 @@ void Motor::move() {
     } 
 }
 
-void Motor::moveXSteps(int x) {
-    leftEncoderCnt = 0;
-    rightEncoderCnt = 0;
-    // timerAlarmEnable(MotorSpeedTim); 
-
-    LeftMotor.move();
-    RightMotor.move();
-    while(leftEncoderCnt <= x && rightEncoderCnt <= x) {}
-
-    LeftMotor.stop();
-    RightMotor.stop();
-}
-
-void Motor::moveXCM(int x) {
-    int steps = x / ENCODER_STEP_IN_CM;
-    moveXSteps(steps);
-}
-
 void Motor::setSpeed(int s) {
     this->speed = s;
 }

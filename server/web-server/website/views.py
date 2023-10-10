@@ -8,6 +8,7 @@ IDLE   = 0
 MANUAL    = 1
 TRACE     = 2
 SCANNING  = 3
+SANDBOX   = 4
 
 TRACE_CMD_SIZE = 10
 
@@ -98,6 +99,13 @@ def trace():
             
         return render_template("trace.html", state=state, left_speed=left_speed, right_speed=right_speed, trace=trace_commands)
 
+
+# route for esp testing
+@views.route('/sandbox', methods=["GET"])
+def sandbox():
+    global state
+    state = SANDBOX
+    return f"state: {state}"
 
 ##########################################
 #               DATA ROUTES              #

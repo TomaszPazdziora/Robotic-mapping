@@ -12,13 +12,13 @@
 
 // DEFINE ALL PERIPHERALS
 
-#define Pin_LeftMotorForward 17 
-#define Pin_LeftMotorBackward 16
-#define Pin_LeftMotorPWM 4 
+#define Pin_LeftMotorForward  5
+#define Pin_LeftMotorBackward 18
+#define Pin_LeftMotorPWM 19
 
-#define Pin_RightMotorForward 5
-#define Pin_RightMotorBackward 18
-#define Pin_RightMotorPWM 19
+#define Pin_RightMotorForward 17
+#define Pin_RightMotorBackward 16
+#define Pin_RightMotorPWM 4 
 
 #define Pin_Trigger 15
 #define Pin_Echo 21
@@ -37,7 +37,7 @@ extern const char* serverTraceAddress;
 
 // ENUMS AND STRUCTS
 
-enum States { idle, manual, trace, scanning};
+enum States { idle, manual, trace, scanning, sandbox};
 
 
 // GLOBAL VARIABLES
