@@ -1,9 +1,9 @@
 #include "tasks.h"
 
+
 void idleTask() {
     while(state == idle) {
         readDataFromServer();
-        // timerAlarmDisable(MotorSpeedTim);
         LeftMotor.stop();
         RightMotor.stop();
     }
@@ -13,7 +13,6 @@ void manualControlTask() {
 
     while(state == manual) {
         readDataFromServer();
-        // int angle = gyroscope.getAngle();
         LeftMotor.move();
         RightMotor.move();        
     }
@@ -30,12 +29,11 @@ void traceTask() {
         readDataFromServer();
         String trace = httpGETRequest(serverTraceAddress);
         Serial.println(trace);
-        // int angle = gyroscope.getAngle();  
-        // LeftMotor.moveXSteps(10);
-        
+
         int cmd = 0;
-        String value;
+        String value = "";
         for(int i=0; i<trace.length(); i++) {
+            readDataFromServer();
             if (trace[i] == 'f') cmd = FORWARDS;
             else if (trace[i] == 'l') cmd = TURN_LEFT;
             else if (trace[i] == 'r') cmd = TURN_RIGHT;
@@ -44,15 +42,94 @@ void traceTask() {
             }
             else if (trace[i] == ',') {
                 int v = value.toInt();
-                Serial.print(cmd);
-                Serial.print(": ");
-                Serial.println(value);
+                // Serial.print(cmd);
+                // Serial.print(": ");
+                // Serial.println(value);
+
+                switch(cmd) {
+                    case NOTHING:
+                        Serial.println("nothing");
+                        break;
+                    case FORWARDS:
+                        Serial.println("frowards");
+                        moveXCM(v);
+                        break;
+                    case TURN_LEFT:
+                        Serial.println("turning left"); 
+                        turnLeft(v);
+                        break;
+                    case TURN_RIGHT:
+                        Serial.println("turning right");
+                        turnRight(v);
+                        break;
+                    default:
+                        Serial.println("turning right");
+                        break;
+                }
                 cmd = 0;
                 value = "";
+                delay(100);
             }
         }
-
-        delay(4000);     
+        LeftMotor.stop();
+        RightMotor.stop();
+        delay(1000);     
     }
 }
 
+void sandboxTask() {
+    Serial.println(gyroscope.getAngle());
+    // timerAlarmDisable(MotorSpeedTim);
+    delay(300);
+}
+
+
+// ###################################################
+// ##           Motor control functions             ##
+// ###################################################
+
+void moveXSteps(int x) {
+    Serial.print("Steps: ");
+    Serial.println(x);
+    leftEncoderCnt = 0;
+    rightEncoderCnt = 0;
+    // timerAlarmEnable(MotorSpeedTim); 
+
+    LeftMotor.move();
+    RightMotor.move();
+
+    while(leftEncoderCnt <= x && rightEncoderCnt <= x) {readDataFromServer();}
+
+    LeftMotor.stop();
+    RightMotor.stop();
+}
+
+void moveXCM(int x) {
+    float steps = x / stepInCm;
+    // Serial.println(round(steps));
+    moveXSteps(round(steps));
+}
+
+void turnLeft(int degrees) {
+    int goalAngle = gyroscope.getAngle() - degrees;
+    if (goalAngle <= -180) {
+        goalAngle = 180 - goalAngle;
+        RightMotor.move();
+        while(gyroscope.getAngle() < 0) {readDataFromServer();}
+    }
+    RightMotor.move();
+    while(gyroscope.getAngle() >= goalAngle) {readDataFromServer();}
+    RightMotor.stop();
+}
+
+void turnRight(int degrees) {
+    int goalAngle = gyroscope.getAngle() + degrees;
+    if (goalAngle >= 180) {
+        goalAngle = -180 + (goalAngle - 180);
+        LeftMotor.move();
+        while(gyroscope.getAngle() > 0) {readDataFromServer();}
+    }
+    LeftMotor.move();
+    while(gyroscope.getAngle() <= goalAngle) {readDataFromServer();}
+    LeftMotor.stop();
+}

@@ -19,8 +19,6 @@ class Motor {
     }
 
     void move();
-    void moveXSteps(int x);
-    void moveXCM(int x);
     void setSpeed(int s);
     void stop();
 };
@@ -28,5 +26,5 @@ class Motor {
 extern Motor RightMotor;
 extern Motor LeftMotor;
 void IRAM_ATTR MotorSpeedInterrupt();
-
+        
 #endif

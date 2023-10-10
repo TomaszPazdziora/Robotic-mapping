@@ -44,6 +44,11 @@ void loop() {
     case trace:
       Serial.println("trace");
       traceTask();
+      break;
+    case sandbox:
+      Serial.println("sandbox");
+      sandboxTask();
+      break;
     default:
       Serial.println("diff");
       break;

@@ -22,7 +22,7 @@ extern Gyroscope gyroscope;
 
 #define DISC_SLOTS 20
 #define WHEEL_DIAMETER 6.10
-#define ENCODER_STEP_IN_CM WHEEL_DIAMETER * 3.14 / DISC_SLOTS
+extern float stepInCm;
 extern volatile int leftEncoderCnt;
 extern volatile int rightEncoderCnt;
 

@@ -37,7 +37,7 @@ int Gyroscope::getAngle() {
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
             Serial.print("ypr\t");
-            Serial.print(ypr[0] * 180/M_PI);
+            Serial.println(ypr[0] * 180/M_PI);
             // Serial.print("\t");
             // Serial.print(ypr[1] * 180/M_PI);
             // Serial.print("\t");
@@ -48,6 +48,7 @@ int Gyroscope::getAngle() {
 
 volatile int leftEncoderCnt = 0;
 volatile int rightEncoderCnt = 0;
+float stepInCm = WHEEL_DIAMETER * 3.14 / DISC_SLOTS;
 
 void incrementLeftEncoderCnt() {
     leftEncoderCnt++;
