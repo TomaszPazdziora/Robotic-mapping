@@ -107,6 +107,7 @@ def sandbox():
     state = SANDBOX
     return f"state: {state}"
 
+
 ##########################################
 #               DATA ROUTES              #
 ##########################################
@@ -138,3 +139,12 @@ def trace_cmd_data():
         elif c == ',':
             out_str += c
     return out_str
+
+# route for esp testing
+@views.route('/lidar_data', methods=["POST"])
+def lidar_data():
+    if request.method == 'POST':
+        data = request.get_data().decode('utf-8')
+        with open("lidar_data.txt", "a") as text_file:
+            text_file.write(data)
+        return 'Data added'
