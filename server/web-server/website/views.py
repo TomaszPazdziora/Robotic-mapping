@@ -1,6 +1,7 @@
 from flask import Blueprint, request, render_template, flash
 from .models import Measurement
 from . import db
+from .lidar_plot import plot
 import json
 
 # STATES
@@ -16,6 +17,7 @@ state = 0
 left_speed = 0
 right_speed = 0
 direction = 0
+is_ready_to_scan = False
 trace_commands = ''
 
 
@@ -91,6 +93,8 @@ def trace():
             trace_commands += ('turn right: ' + right_shift + ', ')
         elif 'reset_trace_btn' in request.form:
             trace_commands = ''
+        elif 'scan_btn' in request.form:
+            trace_commands += ('scan, ')
 
         if left_speed == '':
             left_speed = 0
@@ -134,6 +138,8 @@ def trace_cmd_data():
             out_str += 'l'
         elif c == 'g':
             out_str += 'r'
+        elif c == 'c':
+            out_str += 's'
         elif c.isdigit():
             out_str += c
         elif c == ',':
@@ -148,3 +154,20 @@ def lidar_data():
         with open("lidar_data.txt", "a") as text_file:
             text_file.write(data)
         return 'Data added'
+    
+
+@views.route('/ready_to_scan', methods=["GET"])
+def is_lidar_ready():
+    global is_ready_to_scan
+    if request.method == 'POST':
+        data = request.get_data()
+        is_ready_to_scan = data
+        print(is_ready_to_scan)
+        return 'Lidar state actualized'
+    if request.method == 'GET':
+        return str(is_ready_to_scan)
+    
+@views.route('/lidar_plot', methods=["GET"])
+def lidar_plt():
+    plot()
+    return "done"
