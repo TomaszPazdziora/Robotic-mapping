@@ -17,7 +17,8 @@ state = 0
 left_speed = 0
 right_speed = 0
 direction = 0
-is_ready_to_scan = False
+is_ready_to_scan = ''
+is_ready_for_trace = ''
 trace_commands = ''
 
 
@@ -69,6 +70,7 @@ def trace():
     global right_speed
     global state
     global trace_commands
+    global is_ready_for_trace
     state = TRACE
 
     if request.method == "GET":
@@ -79,6 +81,8 @@ def trace():
         if 'stop_btn' in request.form:
             left_speed = 0
             right_speed = 0
+        elif 'start_btn' in request.form:
+            is_ready_for_trace = 'ready'
         elif 'set_default_btn' in request.form:
             left_speed = request.form['default_speed']
             right_speed = left_speed
@@ -156,17 +160,29 @@ def lidar_data():
         return 'Data added'
     
 
-@views.route('/ready_to_scan', methods=["GET"])
+@views.route('/ready_to_scan', methods=["GET", "POST"])
 def is_lidar_ready():
     global is_ready_to_scan
     if request.method == 'POST':
         data = request.get_data()
-        is_ready_to_scan = data
+        is_ready_to_scan = str(data)
         print(is_ready_to_scan)
         return 'Lidar state actualized'
     if request.method == 'GET':
-        return str(is_ready_to_scan)
+        buff = is_ready_to_scan
+        is_ready_to_scan = 'not'
+        return buff
     
+
+@views.route('/ready_for_trace', methods=["GET"])
+def is_ready_trace():
+    global is_ready_for_trace
+    if request.method == 'GET':
+        buff = is_ready_for_trace
+        is_ready_for_trace = 'not'
+        return buff
+    
+
 @views.route('/lidar_plot', methods=["GET"])
 def lidar_plt():
     plot()

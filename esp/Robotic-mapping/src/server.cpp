@@ -63,3 +63,24 @@ String httpGETRequest(const char* serverAddress) {
   http.end();
   return payload;
 }
+
+void readyForScan() {
+  if (WiFi.status() == WL_CONNECTED) {
+    WiFiClient client;
+    HTTPClient http;
+
+    http.begin(client, serverLidarReadyAddress);
+    http.addHeader("Content-Type", "text/plain");
+
+    String dataMessege = "ready";
+    int httpResponseCode = http.POST(dataMessege);
+
+    if (httpResponseCode > 0) {
+      Serial.println("POST request successful");
+    }
+    else {
+      Serial.println("Error on POST request");
+    }
+    http.end();
+  }
+}

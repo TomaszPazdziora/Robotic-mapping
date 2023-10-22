@@ -8,7 +8,7 @@ class Motor {
         int Pin_Forward;
         int Pin_Backward;
         int Pin_PWM;
-        int speed;
+        
 
     public: 
     Motor(int forw, int back, int pwm) {
@@ -18,6 +18,7 @@ class Motor {
         speed = 0;
     }
 
+    int speed;
     void move();
     void setSpeed(int s);
     void stop();

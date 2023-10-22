@@ -34,6 +34,8 @@ extern const char* ssid;
 extern const char* password;
 extern const char* serverDataAddress;
 extern const char* serverTraceAddress;
+extern const char* serverLidarReadyAddress;
+extern const char* serverReadyForTraceAddress;
 
 // ENUMS AND STRUCTS
 
