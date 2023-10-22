@@ -23,9 +23,17 @@ typedef struct __attribute__((packed)) {
    uint8_t crc8;
 } LiDARFrameTypeDef;
 
-const char* ssid = "TP-Link_292F"; 
-const char* password = "64857817"; 
-const char* serverLidarData = "http://192.168.0.108:5000/lidar_data";
+struct Position {
+  int x;
+  int y;
+  float angle;
+};
+
+const char* ssid = "* UPC6948437-2.4"; 
+const char* password = "vESck6wbmddj"; 
+const char* serverLidarData =          "http://192.168.0.38:5000/lidar_data";
+const char* serverReadyToScanAddress = "http://192.168.0.38:5000/ready_to_scan";
+const char* serverCurrentPosition =    "http://192.168.0.38:5000/current_position";
 
 #define BYTES_READ 3000
 uint8_t recived[BYTES_READ];
@@ -35,11 +43,17 @@ void clearLidarData();
 void readLidarData();
 LiDARFrameTypeDef getLidarFrame(int startIndex);
 void sendLidarDataToServer(LiDARFrameTypeDef measurement);
+String httpGETRequest(const char* serverAddress);
+void updateCurrentPosition();
+Position Current_Position;
 
 void setup() {
   Serial.begin(230400);
   Serial2.begin(230400);
   clearLidarData();
+  Current_Position.x = 0;
+  Current_Position.y = 0;
+  Current_Position.angle = 0;
   delay(1000);
 
   WiFi.begin(ssid, password);
@@ -53,15 +67,20 @@ void setup() {
 }
 
 void loop() {
-    readLidarData();
-
-    for(int i=0; i<BYTES_READ-50; i++) {
-      if(recived[i]==0x54 &&recived[i+1]==0x2C) {
-        LidarMeasurements = getLidarFrame(i);
-        sendLidarDataToServer(LidarMeasurements);
+    if (httpGETRequest(serverReadyToScanAddress) == "ready") {
+      updateCurrentPosition();
+      readLidarData();
+      for(int i=0; i<BYTES_READ-50; i++) {
+        if(recived[i]==0x54 && recived[i+1]==0x2C) {
+          LidarMeasurements = getLidarFrame(i);
+          sendLidarDataToServer(LidarMeasurements);
+        }
       }
     }
-    while(1){}
+    else {
+      Serial.println(httpGETRequest(serverReadyToScanAddress));
+    }
+    delay(1000);
   }
 
   void clearLidarData() {
@@ -98,35 +117,37 @@ void loop() {
     http.begin(client, serverLidarData);
     http.addHeader("Content-Type", "text/plain");
 
-    float end_ang = float(measurement.end_angle) / 100;
-    float start_ang = float(measurement.start_angle) / 100;
-    Serial.print("end : ");
-    Serial.println(end_ang);
-    Serial.print("start : ");
-    Serial.println(start_ang);
+    float end_ang = Current_Position.angle + float(measurement.end_angle) / 100;
+    float start_ang = Current_Position.angle + float(measurement.start_angle) / 100;
+    // Serial.print("end : ");
+    // Serial.println(end_ang);
+    // Serial.print("start : ");
+    // Serial.println(start_ang);
 
     float step = 0;
     int x[POINT_PER_PACK];
     int y[POINT_PER_PACK];
 
     if (end_ang > start_ang) step = (end_ang - start_ang) / POINT_PER_PACK;
-    else step = (end_ang + 360 - start_ang) / POINT_PER_PACK;
+    else step                     = (end_ang + 360 - start_ang) / POINT_PER_PACK;
 
-    Serial.print("step : ");
-    Serial.println(step);
-    Serial.println("---------------------------");
+    // Serial.print("step : ");
+    // Serial.println(step);
+    // Serial.println("---------------------------");
 
     for(int i=0; i<POINT_PER_PACK; i++) {
       float angle = start_ang + step*i;
       angle = angle * (PI/180); // in radians
 
-      Serial.print("angle : ");
-      Serial.println(angle);
+      // Serial.print("angle : ");
+      // Serial.println(angle);
+      // Serial.print("$");
 
-      x[i] = measurement.point[i].distance * sin(angle);
-      y[i] = measurement.point[i].distance * cos(angle);
-      Serial.print("i: ");Serial.print(i);Serial.print(", x: ");Serial.print(x[i]);Serial.print(", y: ");Serial.println(y[i]);
+      x[i] = Current_Position.x + measurement.point[i].distance * sin(angle);
+      y[i] = Current_Position.y + measurement.point[i].distance * cos(angle);
+      // Serial.print("i: ");Serial.print(i);Serial.print(", x: ");Serial.print(x[i]);Serial.print(", y: ");Serial.println(y[i]);
     }
+    Serial.print("\n");
 
     String dataMessege = "";
 
@@ -137,16 +158,79 @@ void loop() {
       dataMessege = dataMessege + String("\n");
     }
 
-    Serial.println(dataMessege);
+    // Serial.println(dataMessege);
 
     int httpResponseCode = http.POST(dataMessege);
 
-    if (httpResponseCode > 0) {
-      Serial.println("POST request successful");
-    }
-    else {
-      Serial.println("Error on POST request");
-    }
+    // if (httpResponseCode > 0) {
+    //   Serial.println("POST request successful");
+    // }
+    // else {
+    //   Serial.println("Error on POST request");
+    // }
     http.end();
   }
+}
+
+String httpGETRequest(const char* serverAddress) {
+  if (WiFi.status() == WL_CONNECTED) {
+    WiFiClient client;
+    HTTPClient http;
+    // Your IP address with path or Domain name with URL path 
+    http.begin(client, serverAddress);
+  
+  
+  // Send HTTP POST request
+  int httpResponseCode = http.GET(); 
+  
+  String payload = "{}"; 
+  
+  if (httpResponseCode>0) {
+    // Serial.print("HTTP Response code: ");
+    // Serial.println(httpResponseCode);
+    payload = http.getString();
+  }
+  
+  // else {
+  //   Serial.print("Error code: ");
+  //   Serial.println(httpResponseCode);
+  // }
+  
+  http.end();
+  return payload;
+  }
+  else return "not connected";
+}
+
+void updateCurrentPosition() {
+  String position = httpGETRequest(serverCurrentPosition);
+  String fields[3];
+  // for (int i=0; i < position.length(); i++) {
+  //   fields[i] = "";
+  // }
+  // recieved message
+  // x\ny\nangle\n
+  int cnt = 0;
+  for (int i=0; i < position.length(); i++) {
+    if (position[i] == '\n') cnt++;
+    else fields[cnt] += position[i]; 
+  }
+  // Serial.print("pos: ");
+  // Serial.println(position);
+  // Serial.print("f0: ");
+  // Serial.println(fields[0]);
+  // Serial.print("f1: ");
+  // Serial.println(fields[1]);
+  // Serial.print("f2: ");
+  // Serial.println(fields[2]);
+
+  Current_Position.x = fields[0].toInt();
+  Current_Position.y = fields[1].toInt();
+  Current_Position.angle = fields[2].toFloat();
+  // Serial.print("x: ");
+  // Serial.println(Current_Position.x);
+  // Serial.print("y: ");
+  // Serial.println(Current_Position.y);
+  // Serial.print("angle: ");
+  // Serial.println(Current_Position.angle);
 }

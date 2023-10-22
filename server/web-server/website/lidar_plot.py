@@ -5,8 +5,8 @@ def plot():
     plt.rcParams["figure.figsize"] = [25.00, 12.50]
     plt.rcParams["figure.autolayout"] = True
 
-    plt.xlim(-5000, 5000)
-    plt.ylim(-5000, 5000)
+    plt.xlim(-10000, 10000)
+    plt.ylim(-10000, 10000)
 
     plt.grid()
 
@@ -32,3 +32,6 @@ def plot():
             val = ''
 
     plt.show()
+
+if __name__ == "__main__":
+    plot()

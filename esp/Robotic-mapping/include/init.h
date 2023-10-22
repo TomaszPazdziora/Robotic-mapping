@@ -36,6 +36,7 @@ extern const char* serverDataAddress;
 extern const char* serverTraceAddress;
 extern const char* serverLidarReadyAddress;
 extern const char* serverReadyForTraceAddress;
+extern const char* serverCurrentPosition;
 
 // ENUMS AND STRUCTS
 
@@ -45,5 +46,11 @@ enum States { idle, manual, trace, scanning, sandbox};
 // GLOBAL VARIABLES
 
 extern int state;
+
+struct Position {
+  int x;
+  int y;
+  float angle;
+};
 
 #endif

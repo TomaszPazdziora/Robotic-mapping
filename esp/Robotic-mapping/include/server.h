@@ -9,5 +9,6 @@ extern int sensorReadingsArr[3];
 String httpGETRequest(const char* serverName);
 void readDataFromServer();
 void readyForScan();
+void sendCurrPosToServer(Position CurrentPosition);
 
 #endif

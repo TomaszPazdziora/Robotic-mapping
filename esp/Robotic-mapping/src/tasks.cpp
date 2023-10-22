@@ -28,6 +28,11 @@ void manualControlTask() {
 #define SCAN       4
 
 void traceTask() {
+    Position CurrentPosition;
+    CurrentPosition.x = 0;
+    CurrentPosition.y = 0;
+    CurrentPosition.angle = 0.0;
+
     while(state == trace) {
         readDataFromServer();
         String isRobotReady = httpGETRequest(serverReadyForTraceAddress);
@@ -35,8 +40,8 @@ void traceTask() {
         if (isRobotReady == "ready") {
             String trace = httpGETRequest(serverTraceAddress);
             Serial.println(trace);
-
             int cmd = 0;
+
             String value = "";
             for(int i=0; i<trace.length(); i++) {
                 readDataFromServer();
@@ -60,16 +65,25 @@ void traceTask() {
                         case FORWARDS:
                             Serial.println("frowards");
                             moveXCM(v);
+                            CurrentPosition.angle = gyroscope.getAngle();
+                            CurrentPosition.x += v*10*sin(CurrentPosition.angle*(PI/180));
+                            CurrentPosition.y += v*10*cos(CurrentPosition.angle*(PI/180));
+                            sendCurrPosToServer(CurrentPosition);
                             break;
                         case TURN_LEFT:
                             Serial.println("turning left"); 
                             turnLeft(v);
+                            CurrentPosition.angle = gyroscope.getAngle();
+                            sendCurrPosToServer(CurrentPosition);
                             break;
                         case TURN_RIGHT:
                             Serial.println("turning right");
                             turnRight(v);
+                            CurrentPosition.angle = gyroscope.getAngle();
+                            sendCurrPosToServer(CurrentPosition);
                             break;
                         case SCAN:
+                            sendCurrPosToServer(CurrentPosition);
                             readyForScan();
                             delay(5000);
                             break;

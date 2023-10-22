@@ -84,3 +84,31 @@ void readyForScan() {
     http.end();
   }
 }
+
+void sendCurrPosToServer(Position CurrentPosition){
+  if (WiFi.status() == WL_CONNECTED) {
+    WiFiClient client;
+    HTTPClient http;
+
+    http.begin(client, serverCurrentPosition);
+    http.addHeader("Content-Type", "text/plain");
+
+    String dataMessege = "";
+    dataMessege += String(CurrentPosition.x);
+    dataMessege += String("\n");
+    dataMessege += String(CurrentPosition.y);
+    dataMessege += String("\n");
+    dataMessege += String(CurrentPosition.angle);
+    dataMessege += String("\n");
+
+    int httpResponseCode = http.POST(dataMessege);
+
+    if (httpResponseCode > 0) {
+      Serial.println("POST request successful");
+    }
+    else {
+      Serial.println("Error on POST request");
+    }
+    http.end();
+  }
+}

@@ -13,14 +13,19 @@ SANDBOX   = 4
 
 TRACE_CMD_SIZE = 10
 
+class Position:
+    x = 0
+    y = 0
+    angle = 0.0
+    
 state = 0
 left_speed = 0
 right_speed = 0
 direction = 0
-is_ready_to_scan = ''
-is_ready_for_trace = ''
+is_ready_to_scan = 'not'
+is_ready_for_trace = 'not'
 trace_commands = ''
-
+CurrentPosition = Position()
 
 views = Blueprint('views', __name__)    
 
@@ -165,7 +170,7 @@ def is_lidar_ready():
     global is_ready_to_scan
     if request.method == 'POST':
         data = request.get_data()
-        is_ready_to_scan = str(data)
+        is_ready_to_scan = 'ready'
         print(is_ready_to_scan)
         return 'Lidar state actualized'
     if request.method == 'GET':
@@ -181,9 +186,34 @@ def is_ready_trace():
         buff = is_ready_for_trace
         is_ready_for_trace = 'not'
         return buff
+
+
+@views.route('/current_position', methods=["GET", "POST"])
+def get_current_position():
+    global CurrentPosition
+    if request.method == 'POST':
+        data = request.get_data().decode('utf-8')
+        print(data)
+        arr = []
+        arr = data.splitlines()
+        CurrentPosition.x = int(arr[0])
+        CurrentPosition.y = int(arr[1])
+        CurrentPosition.angle = float(arr[2])
+        return 'Position updated'
+    if request.method == 'GET':
+        ret_str = ''
+        ret_str += str(CurrentPosition.x)
+        ret_str += '\n'
+        ret_str += str(CurrentPosition.y)
+        ret_str += '\n'
+        ret_str += str(CurrentPosition.angle)
+        ret_str += '\n'
+        print(ret_str)
+        return ret_str
     
 
 @views.route('/lidar_plot', methods=["GET"])
 def lidar_plt():
     plot()
     return "done"
+
