@@ -90,7 +90,8 @@ def trace():
             is_ready_for_trace = 'ready'
         elif 'set_default_btn' in request.form:
             left_speed = request.form['default_speed']
-            right_speed = left_speed
+            left_speed_int = int(left_speed) + 30
+            right_speed = str(left_speed_int)
         elif 'drive_forwards_btn' in request.form:
             drive_forwards = request.form['drive_forwards']
             trace_commands += ('forwards: ' + drive_forwards + ', ')

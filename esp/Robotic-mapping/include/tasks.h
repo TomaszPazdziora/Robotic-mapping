@@ -5,6 +5,7 @@
 
 void moveXSteps(int x);
 void moveXCM(int x);
+void moveXMiliSec(int x);
 void turnLeft(int degrees);
 void turnRight(int degrees);
 
