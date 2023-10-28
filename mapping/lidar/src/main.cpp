@@ -29,11 +29,17 @@ struct Position {
   float angle;
 };
 
+#define BITMAP_SIZE 250
+const int RESOLUTION = 40;
+uint8_t occupancy_array[BITMAP_SIZE][BITMAP_SIZE];
+
 const char* ssid = "* UPC6948437-2.4"; 
 const char* password = "vESck6wbmddj"; 
 const char* serverLidarData =          "http://192.168.0.38:5000/lidar_data";
 const char* serverReadyToScanAddress = "http://192.168.0.38:5000/ready_to_scan";
 const char* serverCurrentPosition =    "http://192.168.0.38:5000/current_position";
+const char* serverOccupancy =          "http://192.168.0.38:5000/occupancy";
+
 
 #define BYTES_READ 3000
 uint8_t recived[BYTES_READ];
@@ -41,6 +47,8 @@ LiDARFrameTypeDef LidarMeasurements;
 
 void clearLidarData();
 void readLidarData();
+void clearBitmap();
+void sendOccupancyBitmapToServer();
 LiDARFrameTypeDef getLidarFrame(int startIndex);
 void sendLidarDataToServer(LiDARFrameTypeDef measurement);
 String httpGETRequest(const char* serverAddress);
@@ -54,7 +62,8 @@ void setup() {
   Current_Position.x = 0;
   Current_Position.y = 0;
   Current_Position.angle = 0;
-  delay(1000);
+  clearBitmap();
+  delay(500);
 
   WiFi.begin(ssid, password);
   Serial.println("Connecting to Wifi");
@@ -69,6 +78,7 @@ void setup() {
 void loop() {
     if (httpGETRequest(serverReadyToScanAddress) == "ready") {
       updateCurrentPosition();
+      delay(300);
       readLidarData();
       for(int i=0; i<BYTES_READ-50; i++) {
         if(recived[i]==0x54 && recived[i+1]==0x2C) {
@@ -76,16 +86,25 @@ void loop() {
           sendLidarDataToServer(LidarMeasurements);
         }
       }
+      sendOccupancyBitmapToServer();
     }
     else {
       Serial.println(httpGETRequest(serverReadyToScanAddress));
     }
-    delay(1000);
+    delay(50);
   }
 
   void clearLidarData() {
     for(int i=0; i<BYTES_READ; i++) {
       recived[i] = 0;
+    }
+  }
+
+  void clearBitmap() {
+    for (int i=0; i <BITMAP_SIZE; i++) {
+      for (int j=0; j <BITMAP_SIZE; j++) {
+        occupancy_array[i][j] = 0;
+      }
     }
   }
 
@@ -143,8 +162,22 @@ void loop() {
       // Serial.println(angle);
       // Serial.print("$");
 
+      if (measurement.point[i].distance == 0) continue;
+
       x[i] = Current_Position.x + measurement.point[i].distance * sin(angle);
       y[i] = Current_Position.y + measurement.point[i].distance * cos(angle);
+
+      int occ_x = round((x[i]+5000) / RESOLUTION);
+      int occ_y = round((y[i]+5000) / RESOLUTION);
+
+      if (occ_x < 0 || occ_x > BITMAP_SIZE) continue;
+      if (occ_y < 0 || occ_y > BITMAP_SIZE) continue;
+      
+      occupancy_array[occ_x][occ_y] = 1;
+
+      /// y 5000 -5000
+      /// x 5000 -5000
+
       // Serial.print("i: ");Serial.print(i);Serial.print(", x: ");Serial.print(x[i]);Serial.print(", y: ");Serial.println(y[i]);
     }
     Serial.print("\n");
@@ -233,4 +266,32 @@ void updateCurrentPosition() {
   // Serial.println(Current_Position.y);
   // Serial.print("angle: ");
   // Serial.println(Current_Position.angle);
+}
+
+
+void sendOccupancyBitmapToServer() {
+  
+  if (WiFi.status() == WL_CONNECTED) {
+    WiFiClient client;
+    HTTPClient http;
+
+    http.begin(client, serverOccupancy);
+    http.addHeader("Content-Type", "text/plain");
+
+    String dataMessege = "";
+    
+    for (int y=0; y <BITMAP_SIZE; y++) {
+      for (int x=0; x <BITMAP_SIZE; x++) {
+        if(occupancy_array[x][y] == 1) {
+          dataMessege = dataMessege + String(x);
+          dataMessege = dataMessege + String(",");
+          dataMessege = dataMessege + String(y);
+          dataMessege = dataMessege + String("\n");
+        }
+      }
+    }
+
+    int httpResponseCode = http.POST(dataMessege);
+    http.end();
+  }
 }

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, flash
 from .models import Measurement
 from . import db
-from .lidar_plot import plot
+# from .lidar_plot import plot
 import json
 
 # STATES
@@ -90,7 +90,7 @@ def trace():
             is_ready_for_trace = 'ready'
         elif 'set_default_btn' in request.form:
             left_speed = request.form['default_speed']
-            left_speed_int = int(left_speed) + 30
+            left_speed_int = int(left_speed) + 12
             right_speed = str(left_speed_int)
         elif 'drive_forwards_btn' in request.form:
             drive_forwards = request.form['drive_forwards']
@@ -162,6 +162,15 @@ def lidar_data():
     if request.method == 'POST':
         data = request.get_data().decode('utf-8')
         with open("lidar_data.txt", "a") as text_file:
+            text_file.write(data)
+        return 'Data added'
+    
+
+@views.route('/occupancy', methods=["POST"])
+def occupancy_data():
+    if request.method == 'POST':
+        data = request.get_data().decode('utf-8')
+        with open("occupancy.txt", "w") as text_file:
             text_file.write(data)
         return 'Data added'
     

@@ -85,8 +85,9 @@ void traceTask() {
                             break;
                         case SCAN:
                             sendCurrPosToServer(CurrentPosition);
+                            delay(500);
                             readyForScan();
-                            delay(5000);
+                            delay(14000);
                             break;
                         default:
                             Serial.println("default");
