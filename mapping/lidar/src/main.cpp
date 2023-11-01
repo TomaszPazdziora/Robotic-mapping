@@ -39,6 +39,7 @@ const char* serverLidarData =          "http://192.168.0.38:5000/lidar_data";
 const char* serverReadyToScanAddress = "http://192.168.0.38:5000/ready_to_scan";
 const char* serverCurrentPosition =    "http://192.168.0.38:5000/current_position";
 const char* serverOccupancy =          "http://192.168.0.38:5000/occupancy";
+const char* serverScanSent =           "http://192.168.0.38:5000/scan_sent";
 
 
 #define BYTES_READ 3000
@@ -53,6 +54,7 @@ LiDARFrameTypeDef getLidarFrame(int startIndex);
 void sendLidarDataToServer(LiDARFrameTypeDef measurement);
 String httpGETRequest(const char* serverAddress);
 void updateCurrentPosition();
+void setLidarDataSentFlag();
 Position Current_Position;
 
 void setup() {
@@ -76,9 +78,9 @@ void setup() {
 }
 
 void loop() {
-    if (httpGETRequest(serverReadyToScanAddress) == "ready") {
+    if (httpGETRequest(serverReadyToScanAddress) == String("ready")) {
       updateCurrentPosition();
-      delay(300);
+      delay(1000);
       readLidarData();
       for(int i=0; i<BYTES_READ-50; i++) {
         if(recived[i]==0x54 && recived[i+1]==0x2C) {
@@ -87,11 +89,9 @@ void loop() {
         }
       }
       sendOccupancyBitmapToServer();
+      setLidarDataSentFlag();
     }
-    else {
-      Serial.println(httpGETRequest(serverReadyToScanAddress));
-    }
-    delay(50);
+    delay(1000);
   }
 
   void clearLidarData() {
@@ -291,6 +291,21 @@ void sendOccupancyBitmapToServer() {
       }
     }
 
+    int httpResponseCode = http.POST(dataMessege);
+    http.end();
+  }
+}
+
+  void setLidarDataSentFlag() {
+  
+  if (WiFi.status() == WL_CONNECTED) {
+    WiFiClient client;
+    HTTPClient http;
+
+    http.begin(client, serverScanSent);
+    http.addHeader("Content-Type", "text/plain");
+
+    String dataMessege = String("ready");
     int httpResponseCode = http.POST(dataMessege);
     http.end();
   }

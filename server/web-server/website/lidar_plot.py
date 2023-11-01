@@ -1,5 +1,6 @@
 import math
 from matplotlib import pyplot as plt
+import numpy as np
 
 def plot_lidar_data():
     plt.rcParams["figure.figsize"] = [25.00, 12.50]
@@ -66,6 +67,7 @@ def plot_occupancy():
 
     plt.show()
 
+
 if __name__ == "__main__":
-    # plot_lidar_data()
-    plot_occupancy()
+    plot_lidar_data()
+    # plot_occupancy()

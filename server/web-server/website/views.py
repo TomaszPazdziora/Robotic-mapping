@@ -24,7 +24,8 @@ right_speed = 0
 direction = 0
 is_ready_to_scan = 'not'
 is_ready_for_trace = 'not'
-trace_commands = ''
+is_scan_sent = 'not'
+trace_commands = 'scan, forwards: 2500, scan, forwards: 2500, scan, f: 2500, scan, forwards: 2500, scan,forwards: 2500, scan,'
 CurrentPosition = Position()
 
 views = Blueprint('views', __name__)    
@@ -78,6 +79,7 @@ def trace():
     global is_ready_for_trace
     state = TRACE
 
+
     if request.method == "GET":
         return render_template("trace.html", state=state, left_speed=left_speed, right_speed=right_speed)
     
@@ -90,7 +92,7 @@ def trace():
             is_ready_for_trace = 'ready'
         elif 'set_default_btn' in request.form:
             left_speed = request.form['default_speed']
-            left_speed_int = int(left_speed) + 12
+            left_speed_int = int(left_speed) + 5
             right_speed = str(left_speed_int)
         elif 'drive_forwards_btn' in request.form:
             drive_forwards = request.form['drive_forwards']
@@ -186,6 +188,19 @@ def is_lidar_ready():
     if request.method == 'GET':
         buff = is_ready_to_scan
         is_ready_to_scan = 'not'
+        return buff
+    
+
+@views.route('/scan_sent', methods=["GET", "POST"])
+def scan_sent():
+    global is_scan_sent
+    if request.method == 'POST':
+        data = request.get_data()
+        is_scan_sent = 'ready'
+        return 'Lidar state actualized'
+    if request.method == 'GET':
+        buff = is_scan_sent
+        is_scan_sent = 'not'
         return buff
     
 

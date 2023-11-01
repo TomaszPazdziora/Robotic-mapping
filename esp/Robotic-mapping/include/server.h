@@ -10,5 +10,6 @@ String httpGETRequest(const char* serverName);
 void readDataFromServer();
 void readyForScan();
 void sendCurrPosToServer(Position CurrentPosition);
+bool isLidarDataSent();
 
 #endif

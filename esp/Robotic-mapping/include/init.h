@@ -37,6 +37,7 @@ extern const char* serverTraceAddress;
 extern const char* serverLidarReadyAddress;
 extern const char* serverReadyForTraceAddress;
 extern const char* serverCurrentPosition;
+extern const char* serverLidarDataSent;
 
 // ENUMS AND STRUCTS
 

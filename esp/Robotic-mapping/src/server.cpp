@@ -112,3 +112,9 @@ void sendCurrPosToServer(Position CurrentPosition){
     http.end();
   }
 }
+
+bool isLidarDataSent() {
+  String response = httpGETRequest(serverLidarDataSent);
+  if (response == String("ready")) return true;
+  else return false;
+}

@@ -1,0 +1,9 @@
+@startuml communication
+Robot -> Server : gotowy na pomiar
+Lidar <- Server : gotowy na pomiar
+Lidar -> Lidar : wykonaj pomiary
+Lidar -> Lidar : utwórz mapę occupancy\nw pamięci urządzenia
+Lidar -> Server : wyślij pomiary
+Lidar -> Server : pomiary zakończone
+Server -> Robot : pomiary zakonczone
+@enduml

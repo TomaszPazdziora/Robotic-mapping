@@ -13,5 +13,6 @@ void manualControlTask();
 void idleTask();
 void traceTask();
 void sandboxTask();
+void scanningTask();
 
 #endif

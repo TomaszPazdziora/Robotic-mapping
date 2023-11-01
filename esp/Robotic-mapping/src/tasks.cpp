@@ -87,7 +87,7 @@ void traceTask() {
                             sendCurrPosToServer(CurrentPosition);
                             delay(500);
                             readyForScan();
-                            delay(14000);
+                            while (isLidarDataSent() == false){delay(100);};
                             break;
                         default:
                             Serial.println("default");
@@ -104,6 +104,15 @@ void traceTask() {
         }
         delay(1000);     
     }
+}
+
+
+void scanningTask() {
+    Position CurrentPosition;
+    CurrentPosition.x = 0;
+    CurrentPosition.y = 0;
+    CurrentPosition.angle = 0.0;
+    // to do
 }
 
 void sandboxTask() {
