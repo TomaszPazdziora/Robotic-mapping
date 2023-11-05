@@ -1,7 +1,4 @@
 from flask import Blueprint, request, render_template, flash
-from .models import Measurement
-from . import db
-# from .lidar_plot import plot
 import json
 
 # STATES
