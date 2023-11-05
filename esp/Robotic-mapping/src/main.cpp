@@ -17,8 +17,8 @@ void setup() {
   // timerAttachInterrupt(MotorSpeedTim, &MotorSpeedInterrupt, true);
   // timerAlarmWrite(MotorSpeedTim, 1000000, true);
 
-  attachInterrupt(digitalPinToInterrupt (Pin_LeftEncoder), incrementLeftEncoderCnt, RISING);
-  attachInterrupt(digitalPinToInterrupt (Pin_RightEncoder), incrementRightEncoderCnt, RISING);  
+  // attachInterrupt(digitalPinToInterrupt (Pin_LeftEncoder), incrementLeftEncoderCnt, RISING);
+  // attachInterrupt(digitalPinToInterrupt (Pin_RightEncoder), incrementRightEncoderCnt, RISING);  
   delay(500);
   
   WiFi.begin(ssid, password);

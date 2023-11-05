@@ -64,7 +64,8 @@ void traceTask() {
                             break;
                         case FORWARDS:
                             Serial.println("frowards");
-                            moveXMiliSec(v);
+                            // moveXMiliSec(v);
+                            moveXCM(v);
                             CurrentPosition.angle = gyroscope.getAngle();
                             v = v / 29;
                             CurrentPosition.x -= v*10*sin(CurrentPosition.angle*(PI/180));
@@ -132,6 +133,8 @@ void moveXSteps(int x) {
     leftEncoderCnt = 0;
     rightEncoderCnt = 0;
     // timerAlarmEnable(MotorSpeedTim); 
+    attachInterrupt(digitalPinToInterrupt (Pin_LeftEncoder), incrementLeftEncoderCnt, RISING);
+    attachInterrupt(digitalPinToInterrupt (Pin_RightEncoder), incrementRightEncoderCnt, RISING); 
 
     LeftMotor.move();
     RightMotor.move();
@@ -143,13 +146,16 @@ void moveXSteps(int x) {
         // delay(10);
     }
 
+    detachInterrupt(digitalPinToInterrupt (Pin_LeftEncoder));
+    detachInterrupt(digitalPinToInterrupt (Pin_RightEncoder)); 
+
     LeftMotor.stop();
     RightMotor.stop();
 }
 
 void moveXCM(int x) {
     float steps = x / stepInCm;
-    // Serial.println(round(steps));
+    Serial.println(round(steps));
     moveXSteps(round(steps));
 }
 
