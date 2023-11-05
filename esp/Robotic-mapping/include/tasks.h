@@ -5,6 +5,7 @@
 
 void moveXSteps(int x);
 void moveXCM(int x);
+void moveXMiliSec(int x);
 void turnLeft(int degrees);
 void turnRight(int degrees);
 
@@ -12,5 +13,6 @@ void manualControlTask();
 void idleTask();
 void traceTask();
 void sandboxTask();
+void scanningTask();
 
 #endif

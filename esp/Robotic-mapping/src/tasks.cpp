@@ -64,10 +64,11 @@ void traceTask() {
                             break;
                         case FORWARDS:
                             Serial.println("frowards");
-                            moveXCM(v);
+                            moveXMiliSec(v);
                             CurrentPosition.angle = gyroscope.getAngle();
-                            CurrentPosition.x += v*10*sin(CurrentPosition.angle*(PI/180));
-                            CurrentPosition.y += v*10*cos(CurrentPosition.angle*(PI/180));
+                            v = v / 29;
+                            CurrentPosition.x -= v*10*sin(CurrentPosition.angle*(PI/180));
+                            CurrentPosition.y -= v*10*cos(CurrentPosition.angle*(PI/180));
                             sendCurrPosToServer(CurrentPosition);
                             break;
                         case TURN_LEFT:
@@ -84,8 +85,9 @@ void traceTask() {
                             break;
                         case SCAN:
                             sendCurrPosToServer(CurrentPosition);
+                            delay(500);
                             readyForScan();
-                            delay(5000);
+                            while (isLidarDataSent() == false){delay(100);};
                             break;
                         default:
                             Serial.println("default");
@@ -102,6 +104,15 @@ void traceTask() {
         }
         delay(1000);     
     }
+}
+
+
+void scanningTask() {
+    Position CurrentPosition;
+    CurrentPosition.x = 0;
+    CurrentPosition.y = 0;
+    CurrentPosition.angle = 0.0;
+    // to do
 }
 
 void sandboxTask() {
@@ -126,10 +137,10 @@ void moveXSteps(int x) {
     RightMotor.move();
 
     while(leftEncoderCnt <= x && rightEncoderCnt <= x) {
-        readDataFromServer();
-        if (LeftMotor.speed == 0 ||
-        RightMotor.speed == 0) break;
-        delay(10);
+        // readDataFromServer();
+        // if (LeftMotor.speed == 0 ||
+        // RightMotor.speed == 0) break;
+        // delay(10);
     }
 
     LeftMotor.stop();
@@ -142,6 +153,14 @@ void moveXCM(int x) {
     moveXSteps(round(steps));
 }
 
+void moveXMiliSec(int x) {
+    LeftMotor.move();
+    RightMotor.move();
+    delay(x);
+    LeftMotor.stop();
+    RightMotor.stop();
+}
+
 void turnLeft(int degrees) {
     int goalAngle = gyroscope.getAngle() - degrees;
     if (goalAngle <= -180) {
@@ -150,14 +169,14 @@ void turnLeft(int degrees) {
         while(gyroscope.getAngle() < 0) {
             readDataFromServer();
             if (RightMotor.speed == 0) break;
-            delay(10);
+            // delay(10);
         }
     }
     RightMotor.move();
     while(gyroscope.getAngle() >= goalAngle) {
         readDataFromServer();
         if (RightMotor.speed == 0) break;
-        delay(10);
+        // delay(10);s
     }
     RightMotor.stop();
 }
@@ -170,14 +189,14 @@ void turnRight(int degrees) {
         while(gyroscope.getAngle() > 0) {
             readDataFromServer();
             if (LeftMotor.speed == 0) break;
-            delay(10);
+            // delay(10);
         }
     }
     LeftMotor.move();
     while(gyroscope.getAngle() <= goalAngle) {
         readDataFromServer();
         if (LeftMotor.speed == 0) break;
-        delay(10);
+        // delay(10);
     }
     LeftMotor.stop();
 }

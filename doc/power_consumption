@@ -1,8 +1,0 @@
-lidar 300 mA
-2x motor 2x300 mA = 600mA
-2x encoder 2x20 mA = 40mA
-gyroscope < 1mA
-esp < 100mA
-
-sum = 1041 mA 
-    ~ 1,1 A

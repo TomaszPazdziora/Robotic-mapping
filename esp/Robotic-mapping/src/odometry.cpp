@@ -48,7 +48,8 @@ int Gyroscope::getAngle() {
 
 volatile int leftEncoderCnt = 0;
 volatile int rightEncoderCnt = 0;
-float stepInCm = WHEEL_DIAMETER * 3.14 / DISC_SLOTS;
+// float stepInCm = WHEEL_DIAMETER * 3.14 / DISC_SLOTS;
+float stepInCm = 6.10 * 3.14 / 20;
 
 void incrementLeftEncoderCnt() {
     leftEncoderCnt++;
