@@ -15,6 +15,9 @@ def plot_lidar_data():
     with open('lidar_data.txt', 'r') as file:
         lidar_data = file.read()
 
+    colors = ["red", "orange", "green", "cyan", "blue", "violet", "pink", "black"]
+    color = colors[0]
+    color_cnt = 0
     val = ''
     x = 0
     y = 0
@@ -27,9 +30,12 @@ def plot_lidar_data():
         elif c == ',':
             x = int(val)
             val = ''
+        elif c == 'e':
+            color_cnt += 1
+            color = colors[color_cnt]
         if c == '\n':
             y = int(val)
-            plt.plot(x, y, marker=".", markersize=4, color="red")
+            plt.plot(x, y, marker=".", markersize=4, color=color)
             # plt.plot(x, y, marker="s", markersize=10, color="blue")
             val = ''
 
@@ -62,7 +68,7 @@ def plot_occupancy():
             val = ''
         if c == '\n':
             y = int(val)
-            plt.plot(x, y, marker="s", markersize=10, color="blue")
+            plt.plot(x, y, marker="s", markersize=10, color="red")
             val = ''
 
     plt.show()

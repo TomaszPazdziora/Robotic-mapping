@@ -27,11 +27,14 @@ void manualControlTask() {
 #define TURN_RIGHT 3
 #define SCAN       4
 
+const float lidarToWheelRadius = 40;
+
 void traceTask() {
-    Position CurrentPosition;
+    Position CurrentPosition, LastPosition;
     CurrentPosition.x = 0;
     CurrentPosition.y = 0;
     CurrentPosition.angle = 0.0;
+    int beforeShift = 0;
 
     while(state == trace) {
         readDataFromServer();
@@ -53,7 +56,7 @@ void traceTask() {
                     value += trace[i];
                 }
                 else if (trace[i] == ',') {
-                    int v = value.toInt();
+                    float v = value.toFloat();
                     // Serial.print(cmd);
                     // Serial.print(": ");
                     // Serial.println(value);
@@ -65,23 +68,40 @@ void traceTask() {
                         case FORWARDS:
                             Serial.println("frowards");
                             // moveXMiliSec(v);
-                            moveXCM(v);
                             CurrentPosition.angle = gyroscope.getAngle();
-                            v = v / 29;
+                            moveXCM(v);
+                            v = v * 0.6;
+                            CurrentPosition.angle = gyroscope.getAngle();
                             CurrentPosition.x -= v*10*sin(CurrentPosition.angle*(PI/180));
                             CurrentPosition.y -= v*10*cos(CurrentPosition.angle*(PI/180));
                             sendCurrPosToServer(CurrentPosition);
                             break;
                         case TURN_LEFT:
                             Serial.println("turning left"); 
+                            // turnLeft(v);
+                            // CurrentPosition.angle = gyroscope.getAngle();
+                            // sendCurrPosToServer(CurrentPosition);
+                            beforeShift = gyroscope.getAngle();
+                            CurrentPosition.x = lidarToWheelRadius * sin(beforeShift*(PI/180)) + CurrentPosition.x;
+                            CurrentPosition.y = lidarToWheelRadius * cos(beforeShift*(PI/180)) + CurrentPosition.y;
                             turnLeft(v);
                             CurrentPosition.angle = gyroscope.getAngle();
+                            CurrentPosition.x = lidarToWheelRadius * sin(CurrentPosition.angle*(PI/180)) + CurrentPosition.x;
+                            CurrentPosition.y = lidarToWheelRadius * cos(CurrentPosition.angle*(PI/180)) + CurrentPosition.y;
                             sendCurrPosToServer(CurrentPosition);
                             break;
                         case TURN_RIGHT:
                             Serial.println("turning right");
+                            // turnRight(v);
+                            // CurrentPosition.angle = gyroscope.getAngle();
+                            // sendCurrPosToServer(CurrentPosition);
+                            beforeShift = gyroscope.getAngle();
+                            CurrentPosition.x = lidarToWheelRadius * sin(beforeShift*(PI/180)) + CurrentPosition.x;
+                            CurrentPosition.y = lidarToWheelRadius * cos(beforeShift*(PI/180)) + CurrentPosition.y;
                             turnRight(v);
                             CurrentPosition.angle = gyroscope.getAngle();
+                            CurrentPosition.x = lidarToWheelRadius * sin(CurrentPosition.angle*(PI/180)) + CurrentPosition.x;
+                            CurrentPosition.y = lidarToWheelRadius * cos(CurrentPosition.angle*(PI/180)) + CurrentPosition.y;
                             sendCurrPosToServer(CurrentPosition);
                             break;
                         case SCAN:

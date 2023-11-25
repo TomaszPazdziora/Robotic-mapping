@@ -55,6 +55,7 @@ void sendLidarDataToServer(LiDARFrameTypeDef measurement);
 String httpGETRequest(const char* serverAddress);
 void updateCurrentPosition();
 void setLidarDataSentFlag();
+void postEndOfMeasFlag();
 Position Current_Position;
 
 void setup() {
@@ -88,6 +89,7 @@ void loop() {
           sendLidarDataToServer(LidarMeasurements);
         }
       }
+      postEndOfMeasFlag();
       sendOccupancyBitmapToServer();
       setLidarDataSentFlag();
     }
@@ -190,10 +192,9 @@ void loop() {
       dataMessege = dataMessege + String(y[i]);
       dataMessege = dataMessege + String("\n");
     }
-
     // Serial.println(dataMessege);
 
-    int httpResponseCode = http.POST(dataMessege);
+    int httpResponseCode = http.POST(dataMessege);  
 
     // if (httpResponseCode > 0) {
     //   Serial.println("POST request successful");
@@ -204,6 +205,21 @@ void loop() {
     http.end();
   }
 }
+
+void postEndOfMeasFlag() {
+  
+  if (WiFi.status() == WL_CONNECTED) {
+    WiFiClient client;
+    HTTPClient http;
+
+    http.begin(client, serverLidarData);
+    http.addHeader("Content-Type", "text/plain");
+
+    int httpResponseCode = http.POST(String('e'));  
+    http.end();
+  }
+}
+
 
 String httpGETRequest(const char* serverAddress) {
   if (WiFi.status() == WL_CONNECTED) {

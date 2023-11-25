@@ -1,0 +1,35 @@
+@startuml trace_task
+
+:Start;
+:Aktualna pozycja:\nx=0, y=0, kąt:0%;
+
+while (Jeżeli:\nstan robota == trasa) is (tak)
+    :Pobierz dane z servera;
+    while (Robot gotowy?) is (tak)
+        :Pobierz trasę\n z serwera;
+        while (Wszystkie \n komendy wykonane) is (nie)
+            :wykonaj komende;
+            switch(wykonaj komende)
+            case (jedź prosto\nzadaną odległość) 
+                :zmierz kąt;
+                :oblicz aktualną pozycję (x, y);
+                :wyślij aktualną pozycję na serwer;
+            case (skręć w prawo\n zadany kąt)
+                :zmierz kąt;
+                :wyślij aktualną pozycję na serwer;
+            case (skręć w lewo\n zadany kąt)
+                :zmierz kąt;
+                :wyślij aktualną pozycję na serwer;
+            case (wykonaj skan)
+                :wyślij aktualną pozycję na serwer;
+                :ustaw flagę "gotowy do skanowania"\n i wyślij ją na serwer;
+                while (Wszystkie pomiary wykonane\n i wysłane na serwer) is (nie)
+                endwhile (tak)
+            endswitch
+        endwhile (tak)
+    endwhile (nie)
+endwhile (nie)
+:Zmień stan robota;
+
+@enduml
+

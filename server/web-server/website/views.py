@@ -22,7 +22,7 @@ direction = 0
 is_ready_to_scan = 'not'
 is_ready_for_trace = 'not'
 is_scan_sent = 'not'
-trace_commands = 'scan, forwards: 2500, scan, forwards: 2500, scan, f: 2500, scan, forwards: 2500, scan,forwards: 2500, scan,'
+trace_commands = 'scan, forwards: 100, scan, forwards: 100, scan, forwards: 100, scan, forwards: 100, scan, scan,forwards: 100, scan,'
 CurrentPosition = Position()
 
 views = Blueprint('views', __name__)    
